@@ -55,8 +55,8 @@ services:
             - "8080:80"
         environment:
             PMA_HOST: mysql
-            PMA_USER: sail
-            PMA_PASSWORD: password
+            PMA_USER: "${PMA_USER:-sail}"
+            PMA_PASSWORD: "${PMA_PASSWORD:-password}"
         depends_on:
             - mysql
         networks:

@@ -1,10 +1,19 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps({
-    products: {type:Object}
+    products: {type:[Object, Array]}
 });
+
+const items = computed(() => {
+    return Array.isArray(props.products) ? props.products : (props.products?.data ?? []);
+});
+
+const links = computed(() => {
+    return Array.isArray(props.products) ? [] : (props.products?.links ?? []);
+})
 </script>
 
 <template>
@@ -49,7 +58,12 @@ const props = defineProps({
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="product in products" :key="product.id">
+                            <tr v-if="items.length === 0">
+                                <td colspan="7" class="border border-gray-400 px-4 py-2 text-center text-gray-500">
+                                    商品がありません。
+                                </td>
+                            </tr>
+                            <tr v-for="product in items" :key="product.id">
                                 <td class="border border-gray-400 px-4 py-2">{{ product.id }}</td>
                                 <td class="border border-gray-400 px-4 py-2">{{ product.name }}</td>
                                 <td class="border border-gray-400 px-4 py-2 text-center">{{ product.code }}</td>
@@ -60,6 +74,15 @@ const props = defineProps({
                             </tr>
                         </tbody>
                     </table>
+
+                    <div class="p-4 flex justify-center">
+                        <nav class="inline-flex -space-x-px" aria-label="Pagination">
+                            <template v-for="(link, idx) in links" :key="idx">
+                                <Link v-if="link.url" :href="link.url" class="px-4 py-2 border bg-white text-gray-700 text-sm hover:bg-gray-100" v-html="link.label" />
+                                <span v-else class="px-4 py-2 border bg-gray-100 text-sm text-gray-500" v-html="link.label"></span>
+                            </template>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>

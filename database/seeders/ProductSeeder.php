@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -29,16 +28,13 @@ class ProductSeeder extends Seeder
             ['name' => 'アンパン', 'code' => 'F002', 'price' => 200, 'tax' => 8],
         ];
 
-        foreach ($products as $product) {
-            DB::table('products')->insert([
-                'name' => $product['name'],
-                'code' => $product['code'],
-                'price' => $product['price'],
-                'tax' => $product['tax'],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ]);
-        }
+        $now = Carbon::now();
+        $insertProducts = array_map(function ($product) use ($now) {
+            $product['created_at'] = $now;
+            $product['updated_at'] = $now;
+            return $product;
+        }, $products);
 
+        DB::table('products')->insert($insertProducts);
     }
 }
