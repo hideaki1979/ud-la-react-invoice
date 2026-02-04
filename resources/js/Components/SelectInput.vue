@@ -5,18 +5,18 @@ const model = defineModel({
     required: true,
 });
 
-const SelectInput = ref(null);
+const selectInput = ref(null);
 defineProps({
     options:null
 });
 
 onMounted(() => {
-    if (SelectInput.value) {
-        SelectInput.value.focus();
+    if (selectInput.value) {
+        selectInput.value.focus();
     }
 });
 
-defineExpose({ focus: () => SelectInput.value.focus() });
+defineExpose({ focus: () => selectInput.value.focus() });
 
 </script>
 

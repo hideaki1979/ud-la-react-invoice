@@ -4,8 +4,8 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import SelectInput from '@/Components/SelectInput.vue';
 
 const taxes = [{id: 10, name: '10%'}, {id: 8, name: '8%'}, {id: 0, name: '非課税'}];
 
@@ -70,7 +70,6 @@ const submit = () => {
                             class="mt-2 block w-full"
                             v-model="form.code"
                             required
-                            autofocus
                             autocomplete="code"
                         />
                         <InputError class="mt-2" :message="form.errors.code" />
@@ -83,21 +82,17 @@ const submit = () => {
                             class="mt-2 block w-full"
                             v-model="form.price"
                             required
-                            autofocus
                             autocomplete="price"
                         />
                         <InputError class="mt-2" :message="form.errors.price" />
                     </div>
                     <div class="mt-4">
                         <InputLabel for="tax" value="Tax" />
-                        <TextInput
+                        <SelectInput :options="taxes"
                             id="tax"
-                            type="text"
                             class="mt-2 block w-full"
                             v-model="form.tax"
                             required
-                            autofocus
-                            autocomplete="tax"
                         />
                         <InputError class="mt-2" :message="form.errors.tax" />
                     </div>
