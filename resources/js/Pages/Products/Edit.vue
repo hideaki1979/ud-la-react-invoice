@@ -12,10 +12,9 @@ const taxes = [{id: 10, name: '10%'}, {id: 8, name: '8%'}, {id: 0, name: '非課
 const props = defineProps({
     product: {
         type: Object,
+        required: true,
     },
 });
-
-console.log(props.product);
 
 const form = useForm({
     name: props.product.name,
@@ -25,9 +24,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.patch(route('products.update', props.product), {
-        onSuccess: () => form.reset('name', 'code', 'price', 'tax'),
-    });
+    form.patch(route('products.update', props.product));
 };
 
 </script>
@@ -86,7 +83,7 @@ const submit = () => {
                         <InputLabel for="price" value="Price" />
                         <TextInput
                             id="price"
-                            type="text"
+                            type="number"
                             class="mt-2 block w-full"
                             v-model="form.price"
                             required

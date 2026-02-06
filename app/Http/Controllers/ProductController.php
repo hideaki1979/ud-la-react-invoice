@@ -31,8 +31,7 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        $product = new Product($request->input());
-        $product->save();
+        Product::create($request->validated());
         return redirect('products');
     }
 
@@ -57,7 +56,7 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
-        $product->update($request->input());
+        $product->update($request->validated());
         return redirect('products');
     }
 
