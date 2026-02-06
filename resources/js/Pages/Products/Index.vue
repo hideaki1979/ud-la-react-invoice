@@ -1,7 +1,12 @@
 <script setup>
+import DangerButton from '@/Components/DangerButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
+
+const form = useForm({
+    id: '',
+});
 
 const props = defineProps({
     products: {type:[Object, Array]}
@@ -13,7 +18,13 @@ const items = computed(() => {
 
 const links = computed(() => {
     return Array.isArray(props.products) ? [] : (props.products?.links ?? []);
-})
+});
+
+const deleteProduct = (id, name) => {
+    if(confirm(name + "を削除しても良いですか？")) {
+        form.delete(route('products.destroy', id));
+    }
+};
 </script>
 
 <template>
@@ -69,8 +80,17 @@ const links = computed(() => {
                                 <td class="border border-gray-400 px-4 py-2 text-center">{{ product.code }}</td>
                                 <td class="border border-gray-400 px-4 py-2 text-right">{{ product.price }}</td>
                                 <td class="border border-gray-400 px-4 py-2 text-right">{{ product.tax }}</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center"></td>
-                                <td class="border border-gray-400 px-4 py-2 text-center"></td>
+                                <td class="border border-gray-400 px-4 py-2 text-center">
+                                    <Link :href="route('products.edit', product.id)"
+                                    :class="'px-4 py-2 bg-yellow-500 text-white border rounded-md text-xs'">
+                                    <i class="fa-solid fa-edit"></i>
+                                    </Link>
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2 text-center">
+                                    <DangerButton @click="deleteProduct(product.id, product.name)">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </DangerButton>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
