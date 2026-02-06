@@ -53,6 +53,7 @@ class ProductRequest extends FormRequest
             'price.max' => ':attributeは:max円以下で入力してください。',
             'price.integer' => ':attributeは数値で入力してください。',
             'tax.required' => ':attributeを入力してください。',
+            'tax.integer' => ':attributeは数値で入力してください。',
         ];
     }
 }
