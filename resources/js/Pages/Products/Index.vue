@@ -1,16 +1,20 @@
 <script setup>
 import DangerButton from '@/Components/DangerButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
-const form = useForm({
-    id: '',
+const props = defineProps({
+    products: {type:[Object, Array]},
+    search_str: String,
 });
 
-const props = defineProps({
-    products: {type:[Object, Array]}
+const form = useForm({
+    id: '',
+    search_str: props.search_str || '',
 });
+
 
 const items = computed(() => {
     return Array.isArray(props.products) ? props.products : (props.products?.data ?? []);
@@ -25,6 +29,14 @@ const deleteProduct = (id, name) => {
         form.delete(route('products.destroy', id));
     }
 };
+
+const search_go = () => {
+    form.get(route('products.index'));
+};
+
+// products が配列またはページネーターかで形が変わるため、
+// 安全にアイテム数を出力する
+console.log(items.value.length);
 </script>
 
 <template>
@@ -46,7 +58,7 @@ const deleteProduct = (id, name) => {
 
             <div class="m-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-2">
-                    <div class="mt-4 mb-4 ml-4 flex">
+                    <div class="mt-4 mb-4 ml-4 flex gap-2">
                         <Link
                             :href="route('products.create')"
                             :class="'px-4 py-2 bg-indigo-500 text-white border rounded-md text-xs'"
@@ -54,6 +66,20 @@ const deleteProduct = (id, name) => {
                             <i class="fa-solid fa-plus-circle"></i>
                             商品登録
                         </Link>
+
+                        <div>
+                            <TextInput
+                                id="search_str"
+                                type="text"
+                                class="block w-full"
+                                v-model="form.search_str"
+                                autocomplete="search_str"
+                                @blur="search_go"
+                            />
+                        </div>
+                        <span v-if="props.products.length ===0" class="m-2">
+                            該当する商品はありません。
+                        </span>
                     </div>
                     <table class="table-auto border border-gray-400 w-10/12 m-4">
 

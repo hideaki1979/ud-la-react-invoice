@@ -12,10 +12,19 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::paginate(10);
-        return Inertia::render('Products/Index', ['products' => $products]);
+        if (empty($request->input()['search_str'])) {
+            $search_str = null;
+            $products = Product::paginate(10);
+        } else {
+            $search_str = $request->input()['search_str'];
+            $products = Product::where('name', 'LIKE', '%' . $search_str . '%')->paginate(10);
+        }
+        return Inertia::render(
+            'Products/Index',
+            ['products' => $products, 'search_str' => $search_str],
+        );
     }
 
     /**
