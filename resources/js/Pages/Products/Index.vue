@@ -36,7 +36,6 @@ const search_go = () => {
 
 // products が配列またはページネーターかで形が変わるため、
 // 安全にアイテム数を出力する
-console.log(items.value.length);
 </script>
 
 <template>
@@ -75,9 +74,10 @@ console.log(items.value.length);
                                 v-model="form.search_str"
                                 autocomplete="search_str"
                                 @blur="search_go"
+                                @keyup.enter="search_go"
                             />
                         </div>
-                        <span v-if="props.products.length ===0" class="m-2">
+                        <span v-if="items.length ===0 && props.search_str" class="m-2">
                             該当する商品はありません。
                         </span>
                     </div>

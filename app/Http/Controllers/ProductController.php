@@ -14,13 +14,16 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        if (empty($request->input()['search_str'])) {
-            $search_str = null;
-            $products = Product::paginate(10);
-        } else {
-            $search_str = $request->input()['search_str'];
-            $products = Product::where('name', 'LIKE', '%' . $search_str . '%')->paginate(10);
-        }
+        $search_str = $request->input('search_str');
+
+        $products = Product::query()
+            ->when($search_str, function ($query, $search) {
+                $escaped_search = str_replace(['%', '_'], ['\\%', '\\_'], $search);
+                $query->where('name', 'LIKE', '%' . $escaped_search . '%');
+            })
+            ->paginate(10)
+            ->withQueryString();
+
         return Inertia::render(
             'Products/Index',
             ['products' => $products, 'search_str' => $search_str],
