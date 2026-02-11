@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Customer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,16 +13,25 @@ class CustomerSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('customers')->insert([
-            [
-                'name' => 'A商店',
-            ],
-            [
-                'name' => 'B商店',
-            ],
-            [
-                'name' => 'C商店',
-            ],
-        ]);
+        $now = now();
+        Customer::factory()
+            ->count(3)
+            ->sequence(
+                [
+                    'name' => 'A商店',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+                [
+                    'name' => 'B商店',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+                [
+                    'name' => 'C商店',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+            )->create();
     }
 }
