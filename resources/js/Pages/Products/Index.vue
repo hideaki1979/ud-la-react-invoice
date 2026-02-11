@@ -8,10 +8,8 @@ import { computed } from 'vue';
 const props = defineProps({
     products: {type:[Object, Array]},
     search_str: String,
-    successMessage: String,
+    flash: Object,  // successMessageの代わりにflashオブジェクトを受け取る
 });
-
-const successMessage = props.successMessage;
 
 const form = useForm({
     id: '',
@@ -36,6 +34,8 @@ const deleteProduct = (id, name) => {
 const search_go = () => {
     form.get(route('products.index'));
 };
+
+const flash = computed(() => props.flash);
 
 // products が配列またはページネーターかで形が変わるため、
 // 安全にアイテム数を出力する
@@ -85,8 +85,8 @@ const search_go = () => {
                         </span>
                     </div>
 
-                    <div v-if="successMessage" class="alert alert-success m-2">
-                        {{ successMessage }}
+                    <div v-if="flash.success" class="m-2 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                        {{ flash.success }}
                     </div>
 
                     <table class="table-auto border border-gray-400 w-10/12 m-4">

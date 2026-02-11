@@ -156,6 +156,12 @@ const showingNavigationDropdown = ref(false);
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('products.index')"
+                            :active="route().current('products.index')"
+                        >
+                            商品情報
+                        </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->

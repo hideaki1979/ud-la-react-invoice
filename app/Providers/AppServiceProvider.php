@@ -22,10 +22,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
-        Inertia::share([
-            'successMessage' => function () {
-                return session('success_str');
-            },
+        Inertia::share('fresh', fn() => [
+            'success' => session('success'),
         ]);
     }
 }
