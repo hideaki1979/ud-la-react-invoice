@@ -85,7 +85,7 @@ const flash = computed(() => props.flash);
                         </span>
                     </div>
 
-                    <div v-if="flash.success" class="m-2 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                    <div v-if="flash?.success" class="m-2 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
                         {{ flash.success }}
                     </div>
 
