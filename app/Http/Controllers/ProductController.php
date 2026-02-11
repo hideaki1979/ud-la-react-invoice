@@ -44,7 +44,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         Product::create($request->validated());
-        return redirect('products');
+        return redirect()->route('products.index')->with('success', '登録完了しました');
     }
 
     /**
@@ -69,7 +69,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->validated());
-        return redirect('products');
+        return redirect()->route('products.index')->with('success', '更新完了しました');
     }
 
     /**
