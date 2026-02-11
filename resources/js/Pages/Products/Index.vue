@@ -8,7 +8,10 @@ import { computed } from 'vue';
 const props = defineProps({
     products: {type:[Object, Array]},
     search_str: String,
+    successMessage: String,
 });
+
+const successMessage = props.successMessage;
 
 const form = useForm({
     id: '',
@@ -81,6 +84,11 @@ const search_go = () => {
                             該当する商品はありません。
                         </span>
                     </div>
+
+                    <div v-if="successMessage" class="alert alert-success m-2">
+                        {{ successMessage }}
+                    </div>
+
                     <table class="table-auto border border-gray-400 w-10/12 m-4">
 
                         <thead>
