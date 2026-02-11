@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained('customers');
             $table->foreignId('product_id1')->constrained('products');
             $table->integer('num1');
-            $table->foreignId('product_id2')->constrained('products');
-            $table->integer('num2');
-            $table->foreignId('product_id3')->constrained('products');
-            $table->integer('num3');
+            $table->foreignId('product_id2')->nullable()->constrained('products');
+            $table->integer('num2')->nullable();
+            $table->foreignId('product_id3')->nullable()->constrained('products');
+            $table->integer('num3')->nullable();
             $table->datetime('orderday');
             $table->timestamps();
         });
