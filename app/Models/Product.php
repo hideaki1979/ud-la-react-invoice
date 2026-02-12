@@ -17,18 +17,10 @@ class Product extends Model
         'tax',
     ];
 
-    public function Product1()
+    public function orders()
     {
-        return $this->hasMany(Order::class, 'product_id1');
-    }
-
-    public function Product2()
-    {
-        return $this->hasMany(Order::class, 'product_id2');
-    }
-
-    public function Product3()
-    {
-        return $this->hasMany(Order::class, 'product_id3');
+        return $this->belongsToMany(Order::class)
+            ->withPivot('quantity')
+            ->withTimestamps();
     }
 }

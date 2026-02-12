@@ -12,12 +12,6 @@ class Order extends Model
 
     protected $fillable = [
         'customer_id',
-        'product_id1',
-        'num1',
-        'product_id2',
-        'num2',
-        'product_id3',
-        'num3',
         'orderday',
     ];
 
@@ -26,18 +20,10 @@ class Order extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function product1()
+    public function products()
     {
-        return $this->belongsTo(Product::class, 'product_id1');
-    }
-
-    public function product2()
-    {
-        return $this->belongsTo(Product::class, 'product_id2');
-    }
-
-    public function product3()
-    {
-        return $this->belongsTo(Product::class, 'product_id3');
+        return $this->belongsToMany(Product::class)
+            ->withPivot('quantity')
+            ->withTimestamps();
     }
 }

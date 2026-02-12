@@ -22,7 +22,11 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer_id' => ['required', 'exists:customers,id'],
+            'orderday' => ['required', 'date'],
+            'products' => ['required', 'array', 'min:1'],
+            'products.*.id' => ['required', 'exists:products,id'],
+            'products.*.quantity' => ['required', 'integer', 'min:1'],
         ];
     }
 }
