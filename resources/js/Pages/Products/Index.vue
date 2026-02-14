@@ -131,7 +131,7 @@ const flash = computed(() => props.flash);
 
                     <div class="p-4 flex justify-center">
                         <nav class="inline-flex -space-x-px" aria-label="Pagination">
-                            <template v-for="(link, idx) in links" :key="idx">
+                            <template v-for="(link, idx) in orders.links" :key="idx">
                                 <Link v-if="link.url" :href="link.url" class="px-4 py-2 border bg-white text-gray-700 text-sm hover:bg-gray-100" v-html="link.label" />
                                 <span v-else class="px-4 py-2 border bg-gray-100 text-sm text-gray-500" v-html="link.label"></span>
                             </template>

@@ -46,6 +46,6 @@ return new class extends Migration
             $table->foreignId('product_id3')->nullable()->constrained('products');
             $table->integer('num3')->nullable();
         });
-        Schema::dropIfExists('order_product_table_and_modify_orders');
+        Schema::dropIfExists('order_products');
     }
 };
