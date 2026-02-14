@@ -13,6 +13,15 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        Order::factory()->count(30)->create();
+        Order::factory()->count(30)->create()->each(function (Order $order) {
+            $productCount = rand(1, 3);
+            $productIds = collect(range(1, 10))->random($productCount);
+
+            foreach ($productIds as $productId) {
+                $order->products()->attach($productId, [
+                    'quantity' => rand(1, 20),
+                ]);
+            }
+        });
     }
 }

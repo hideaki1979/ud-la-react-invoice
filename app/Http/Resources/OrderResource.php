@@ -16,13 +16,8 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'customer' => CustomerResource::make($this->customer),
-            'product1' => ProductResource::make($this->product1),
-            'num1' => $this->num1,
-            'product2' => ProductResource::make($this->product2),
-            'num2' => $this->num2,
-            'product3' => ProductResource::make($this->product3),
-            'num3' => $this->num3,
+            'customer' => CustomerResource::make($this->whenLoaded('customer')),
+            'products' => ProductResource::collection($this->whenLoaded('products')),
             'orderday' => $this->orderday,
         ];
     }
