@@ -21,7 +21,7 @@ class OrderController extends Controller
         $orders = Order::query()
             ->with(['customer', 'products'])
             ->when($search_str, function ($query, $search) {
-                $search_terms = preg_split('/\s+/', -2, PREG_SPLIT_NO_EMPTY);
+                $search_terms = preg_split('/\s+/', $search, -1, PREG_SPLIT_NO_EMPTY);
                 $query->whereHas('customer', function ($q) use ($search_terms) {
                     foreach ($search_terms as $term) {
                         $escaped_term = str_replace(['%', '_'], ['\\%', '\\_'], $term);
