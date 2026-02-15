@@ -15,7 +15,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['customer', 'products'])->paginate(5);
+        $orders = Order::with(['customer', 'products'])
+            ->paginate(config('pagination.orders_per_page', 5));
         return Inertia::render('Orders/Index', [
             'orders' => $orders,
         ]);

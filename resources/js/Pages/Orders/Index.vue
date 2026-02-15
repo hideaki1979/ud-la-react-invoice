@@ -18,9 +18,17 @@ const form = useForm({
     search_str: props.search_str || '',
 });
 
-const deleteOrder = (id, name) => {
-    if (confirm(name + "を削除して良いですか？")) {
+const deleteOrder = (id, customerName) => {
+    if (confirm(customerName + "を削除して良いですか？")) {
+        form.delete(route('orders.destroy', id), {
+            onSuccess: () => {
 
+            },
+            onError: (errors) => {
+                console.error('削除に失敗しました。', errors);
+                alert('注文の削除に失敗しました。')
+            }
+        });
     }
 };
 
@@ -31,9 +39,6 @@ const search_go = () => {
 const links = computed(() => {
     return Array.isArray(props.orders) ? [] : (props.orders.links ?? [] );
 });
-
-console.log(props.orders.data.length)
-console.log(props.orders);
 
 </script>
 
@@ -74,7 +79,7 @@ console.log(props.orders);
                             />
                         </div>
                         <span v-if="props.orders.data.length===0" class="m-2">
-                            該当する顧客はありません
+                            該当する注文はありません
                         </span>
                     </div>
 
@@ -89,6 +94,7 @@ console.log(props.orders);
                                 <th class="px-4 py-2 text-xs">受注日</th>
                                 <th class="px-4 py-2 text-xs">顧客</th>
                                 <th class="px-4 py-2 text-xs">商品</th>
+                                <th class="px-4 py-2 text-xs">価格</th>
                                 <th class="px-4 py-2 text-xs">税率</th>
                                 <th class="px-4 py-2 text-xs">注文数</th>
                                 <th class="px-4 py-2"></th>
@@ -104,6 +110,7 @@ console.log(props.orders);
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.name }}</td>
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.price }}</td>
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.tax }}</td>
+                                    <td class="border border-gray-400 px-4 py-2 text-center">{{ product.pivot.quantity }}</td>
                                     <td v-if="idx === 0" :rowspan="order.products.length" class="border border-gray-400 px-4 py-2 text-center"></td>
                                     <td v-if="idx === 0" :rowspan="order.products.length" class="border border-gray-400 px-4 py-2 text-center">
                                         <DangerButton @click="deleteOrder(order.id, order.name)">

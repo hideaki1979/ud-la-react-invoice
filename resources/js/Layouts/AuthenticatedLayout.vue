@@ -176,7 +176,7 @@ const showingNavigationDropdown = ref(false);
                             :href="route('orders.index')"
                             :active="route().current('orders.index')"
                         >
-                            商品情報
+                            オーダー情報
                         </ResponsiveNavLink>
                     </div>
 
