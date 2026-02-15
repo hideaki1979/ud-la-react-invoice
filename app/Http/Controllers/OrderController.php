@@ -6,6 +6,7 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class OrderController extends Controller
@@ -13,12 +14,25 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['customer', 'products'])
-            ->paginate(config('pagination.orders_per_page', 5));
+        $search_str = $request->input('search_str');
+
+        $orders = Order::query()
+            ->with(['customer', 'products'])
+            ->when($search_str, function ($query, $search) {
+                $escaped_search = str_replace(['%', '_'], ['\\%', '\\_'], $search);
+                $query->whereHas('customer', function ($q) use ($escaped_search) {
+                    $q->where('name', 'LIKE', '%' . $escaped_search . '%');
+                });
+            })
+            ->orderBy('orderday', 'desc')
+            ->paginate(config('pagination.orders_per_page', 5))
+            ->withQueryString();
+
         return Inertia::render('Orders/Index', [
             'orders' => $orders,
+            'search_str' => $search_str,
         ]);
     }
 

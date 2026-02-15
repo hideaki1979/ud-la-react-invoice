@@ -52,16 +52,16 @@ const links = computed(() => {
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="">
-                <div>
-                    <div>オーダー一覧</div>
+        <div class="py-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-sm sm: rounded-lg">
+                    <div class="p-4 text-gray-900">オーダー一覧</div>
                 </div>
             </div>
 
-            <div>
-                <div>
-                    <div>
+            <div class="m-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-2">
+                    <div class="mt-4 mb-4 ml-4 flex gap-4">
                         <Link
                             :href="route('orders.create')"
                             :class="'px-4 py-2 bg-indigo-500 text-white border rounded-md text-xs'"
