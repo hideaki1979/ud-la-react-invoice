@@ -16,14 +16,17 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $search_str = $request->input('search_str');
+        $search_str = $request->string('search_str')->toString();
 
         $orders = Order::query()
             ->with(['customer', 'products'])
             ->when($search_str, function ($query, $search) {
-                $escaped_search = str_replace(['%', '_'], ['\\%', '\\_'], $search);
-                $query->whereHas('customer', function ($q) use ($escaped_search) {
-                    $q->where('name', 'LIKE', '%' . $escaped_search . '%');
+                $search_terms = preg_split('/\s+/', -2, PREG_SPLIT_NO_EMPTY);
+                $query->whereHas('customer', function ($q) use ($search_terms) {
+                    foreach ($search_terms as $term) {
+                        $escaped_term = str_replace(['%', '_'], ['\\%', '\\_'], $term);
+                        $q->where('name', 'LIKE', '%' . $escaped_term . '%');
+                    }
                 });
             })
             ->orderBy('orderday', 'desc')
