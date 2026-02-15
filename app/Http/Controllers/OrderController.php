@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -13,7 +15,11 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::with(['customer', 'products'])
+            ->paginate(config('pagination.orders_per_page', 5));
+        return Inertia::render('Orders/Index', [
+            'orders' => $orders,
+        ]);
     }
 
     /**

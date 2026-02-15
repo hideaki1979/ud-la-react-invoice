@@ -21,7 +21,7 @@ class ProductController extends Controller
                 $escaped_search = str_replace(['%', '_'], ['\\%', '\\_'], $search);
                 $query->where('name', 'LIKE', '%' . $escaped_search . '%');
             })
-            ->paginate(10)
+            ->paginate(config('pagination.products_per_page', 10))
             ->withQueryString();
 
         return Inertia::render(
