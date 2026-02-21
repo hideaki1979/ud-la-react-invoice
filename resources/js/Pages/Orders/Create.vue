@@ -7,7 +7,7 @@ import ComboBoxInput from '@/Components/ComboBoxInput.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 
 const props = defineProps({
@@ -18,25 +18,34 @@ const props = defineProps({
 const form = useForm({
     customer_id: '',
     orderday: '',
-    product_id: '',
     products: [
-        {id: '', quantity: ''},
+        {id: '', quantity: '', _uid: 0},
     ],
 });
 
+const nextProductId = ref(1);
+
 // 商品行の追加
 const addProduct = () => {
-    form.products.push({id: '', quantity: ''});
+    form.products.push({id: '', quantity: '', _uid: nextProductId.value});
+    nextProductId.value++;
 };
 
 // 商品行の削除
-const removeProduct = () => {
+const removeProduct = (index) => {
     form.products.splice(index, 1);
 };
 
+const productMap = computed(() =>
+    props.products.reduce((map, product) => {
+        map[product.id] = product;
+        return map;
+    }, {})
+);
+
 // 各行の選択された商品情報を取得
 const getSelectedProduct = (productId) => {
-    return props.products.find(product => product.id === productId);
+    return productMap.value[productId];
 };
 
 // 合計金額（税込）
@@ -49,11 +58,6 @@ const totalAmount = computed(() => {
         }
         return sum;
     }, 0);
-});
-
-//商品選択時の処理
-const selectedProduct = computed(() => {
-    return props.products.find(product => product.id === form.product_id);
 });
 
 const submit = () => {
@@ -101,7 +105,7 @@ const submit = () => {
                             autofocus
                             autocomplete="customer_id"
                         />
-                        <InputError class="mt-2" :message="form.errors.customer" />
+                        <InputError class="mt-2" :message="form.errors.customer_id" />
                     </div>
 
                     <div class="mt-4">
@@ -132,7 +136,7 @@ const submit = () => {
 
                         <div
                             v-for="(item, index) in form.products"
-                            :key="index"
+                            :key="item._uid"
                             class="mt-4 p-4 bg-gray-50 rounded-md border"
                         >
                             <div class="flex items-start gap-4 flex-wrap">
@@ -205,7 +209,7 @@ const submit = () => {
                         <PrimaryButton
                             class="ms-4"
                             :class="{ 'opacity-25': form.processing }"
-                            :disable="form.processing"
+                            :disabled="form.processing"
                         >
                             登録
                         </PrimaryButton>

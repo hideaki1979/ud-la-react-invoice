@@ -50,8 +50,10 @@ class StoreOrderRequest extends FormRequest
             'orderday.date' => ':attributeは日付入力してください。',
             'products.required' => ':attributeを選択してください',
             'products.min' => ':attributeは1つ以上選択してください',
+            'products.*.id.exists' => ':attributeが存在しません。',
             'products.*.id.required' => ':attributeがみつかりません',
             'products.*.quantity.required' => ':attributeを入力してください。',
+            'products.*.quantity.integer' => ':attributeは整数で入力してください。',
             'products.*.quantity.min' => ':attributeは1つ以上入力してください',
         ];
     }

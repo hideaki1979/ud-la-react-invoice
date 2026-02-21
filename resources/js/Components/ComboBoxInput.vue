@@ -40,7 +40,18 @@ const selectOption = (option) => {
 };
 
 const onBlur = () => {
-    setTimeout(() => { isOpen.value = false; }, 200);
+    setTimeout(() => {
+        isOpen.value = false;
+
+        // 選択肢が確定していない場合、入力内容をリセットする
+        const selected = props.options.find(op => op.id === props.modelValue);
+        if (!selected) {
+            searchText.value = '';
+        } else {
+            // 確定しているが、表示テキストが異なる場合はもとに戻す
+            searchText.value = selected.name;
+        }
+    }, 200);
 };
 </script>
 
