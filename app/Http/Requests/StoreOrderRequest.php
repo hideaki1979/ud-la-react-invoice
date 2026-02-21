@@ -29,4 +29,30 @@ class StoreOrderRequest extends FormRequest
             'products.*.quantity' => ['required', 'integer', 'min:1'],
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'customer_id' => '客先',
+            'orderday' => '注文日',
+            'products' => '商品数',
+            'products.*.id' => '商品名',
+            'products.*.quantity' => '注文数',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'customer_id.required' => ':attributeを入力してください。',
+            'customer_id.exists' => ':attributeの顧客が存在しません。',
+            'orderday.required' => ':attributeを入力してください。',
+            'orderday.date' => ':attributeは日付入力してください。',
+            'products.required' => ':attributeを選択してください',
+            'products.min' => ':attributeは1つ以上選択してください',
+            'products.*.id.required' => ':attributeがみつかりません',
+            'products.*.quantity.required' => ':attributeを入力してください。',
+            'products.*.quantity.min' => ':attributeは1つ以上入力してください',
+        ];
+    }
 }

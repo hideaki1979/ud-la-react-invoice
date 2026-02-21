@@ -83,7 +83,7 @@ const links = computed(() => {
                         </span>
                     </div>
 
-                    <div v-if="flash?.success" class="bg-green-100 p-4 m-4 w-40">
+                    <div v-if="flash?.success" class="bg-green-100 p-4 m-4 w-3/4">
                         {{ flash.success }}
                     </div>
 
