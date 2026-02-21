@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Customer;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class OrderController extends Controller
@@ -44,7 +47,13 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        $customers = Customer::get(['id', 'name']);
+        $products = Product::get(['id', 'name', 'code', 'price', 'tax']);
+
+        return Inertia::render('Orders/Create', [
+            'customers' => $customers,
+            'products' => $products,
+        ]);
     }
 
     /**
@@ -52,7 +61,21 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        DB::transaction(function () use ($request) {
+            $order = Order::create([
+                'customer_id' => $request->customer_id,
+                'orderday' => $request->orderday,
+            ]);
+
+            $products = collect($request->products)->mapWithKeys(function ($product) {
+                return [$product['id'] => ['quantity' => $product['quantity']]];
+            });
+
+            $order->products()->attach($products);
+        });
+
+        return to_route('orders.index')
+            ->with('success', '注文を登録しました。');
     }
 
     /**
