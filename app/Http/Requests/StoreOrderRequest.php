@@ -25,7 +25,7 @@ class StoreOrderRequest extends FormRequest
             'customer_id' => ['required', 'exists:customers,id'],
             'orderday' => ['required', 'date'],
             'products' => ['required', 'array', 'min:1'],
-            'products.*.id' => ['required', 'exists:products,id'],
+            'products.*.id' => ['required', 'exists:products,id', 'distinct'],
             'products.*.quantity' => ['required', 'integer', 'min:1'],
         ];
     }
@@ -51,6 +51,7 @@ class StoreOrderRequest extends FormRequest
             'products.required' => ':attributeを選択してください',
             'products.min' => ':attributeは1つ以上選択してください',
             'products.*.id.exists' => ':attributeが存在しません。',
+            'products.*.id.distinct' => ':attributeが重複しています。',
             'products.*.id.required' => ':attributeがみつかりません',
             'products.*.quantity.required' => ':attributeを入力してください。',
             'products.*.quantity.integer' => ':attributeは整数で入力してください。',

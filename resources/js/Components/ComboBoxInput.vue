@@ -14,6 +14,7 @@ const isOpen = ref(false);
 
 // 選択済みの場合、表示名をセット
 watch(() => props.modelValue, (newVal) => {
+    if (isOpen.value) return;
     const found = props.options.find(op => op.id === newVal);
     searchText.value = found ? found.name : '';
 }, { immediate: true });
