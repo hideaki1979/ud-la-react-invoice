@@ -37,7 +37,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
-        return true; // 例: 注文の所有者のみが閲覧可能
+        return true; // 認証済ユーザーは更新可能
     }
 
     /**

@@ -46,11 +46,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $products = Product::get(['id', 'name', 'code', 'price', 'tax']);
-
-        return Inertia::render('Orders/Create', [
-            'products' => $products,
-        ]);
+        return Inertia::render('Orders/Create');
     }
 
     /**
@@ -97,7 +93,6 @@ class OrderController extends Controller
 
         return Inertia::render('Orders/Edit', [
             'order' => $order,
-            'products' => $products,
         ]);
     }
 
@@ -144,8 +139,10 @@ class OrderController extends Controller
     {
         $query = $request->input('query');
         $escaped_query = str_replace(['%', '_'], ['\\%', '\\_'], $query);
-        $products = Product::where('name', 'like', '%' . $escaped_query . '%')
-            ->orWhere('code', 'like', '%' . $escaped_query . '%')
+        $products = Product::where(function ($q) use ($escaped_query) {
+            $q->where('name', 'like', '%' . $escaped_query . '%')
+                ->orWhere('code', 'like', '%' . $escaped_query . '%');
+        })
             ->limit(config('pagination.search_results_limit', 20)) // パフォーマンスのために結果を制限
             ->get(['id', 'name', 'code', 'price', 'tax']);
 

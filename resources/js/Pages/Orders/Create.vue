@@ -9,9 +9,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed, reactive, ref } from 'vue';
 
 
-const props = defineProps({
-    products: {type: [Object, Array]},
-});
+const props = defineProps({});
 
 const form = useForm({
     customer_id: '',

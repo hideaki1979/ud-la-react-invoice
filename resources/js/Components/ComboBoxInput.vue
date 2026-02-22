@@ -18,6 +18,7 @@ const emit = defineEmits(['update:modelValue', 'selected']);
 const searchText = ref(props.initialDisplayName);
 const isOpen = ref(false);
 const options = ref([]);
+const hasSearched = ref(false);
 
 // デバウンス用タイマー
 let debounceTimer = null;
@@ -25,6 +26,7 @@ let debounceTimer = null;
 // 検索クエリの変更を監視し、デバウンスしてAPIを呼び出す
 const onInput = () => {
     isOpen.value = true;
+    hasSearched.value = true;
     emit('update:modelValue', '');
 
     // デバウンスしてAPI取得
@@ -51,6 +53,7 @@ const selectOption = (option) => {
     emit('update:modelValue', option.id);
     emit('selected', option);
     isOpen.value = false;
+    hasSearched.value = false;
 };
 
 const onBlur = () => {
@@ -99,7 +102,7 @@ watch(() => props.initialDisplayName, (newVal) => {
             </li>
         </ul>
         <p
-            v-if="isOpen && searchText && options.length === 0"
+            v-if="isOpen && searchText && options.length === 0 && hasSearched"
             class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg px-3 py-2 text-sm text-gray-500"
         >
             該当する項目がありません
