@@ -111,7 +111,13 @@ const links = computed(() => {
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.price }}</td>
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.tax }}</td>
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.pivot.quantity }}</td>
-                                    <td v-if="idx === 0" :rowspan="order.products.length" class="border border-gray-400 px-4 py-2 text-center"></td>
+                                    <td v-if="idx === 0" :rowspan="order.products.length" class="border border-gray-400 px-4 py-2 text-center">
+                                        <Link :href="route('orders.edit', order.id)"
+                                            :class="'px-4 py-2 bg-yellow-500 text-white border rounded-md text-xs'"
+                                        >
+                                            <i class="fa-solid fa-edit"></i>
+                                        </Link>
+                                    </td>
                                     <td v-if="idx === 0" :rowspan="order.products.length" class="border border-gray-400 px-4 py-2 text-center">
                                         <DangerButton @click="deleteOrder(order.id, order.name)">
                                             <i class="fa-solid fa-trash"></i>

@@ -91,7 +91,17 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        $customers = Customer::get(['id', 'name']);
+        $products = Product::get(['id', 'name', 'code', 'price', 'tax']);
+
+        // 中間テーブルのquantityを含めてリレーションをロード
+        $order->load('products');
+
+        return Inertia::render('Orders/Edit', [
+            'order' => $order,
+            'customers' => $customers,
+            'products' => $products,
+        ]);
     }
 
     /**
