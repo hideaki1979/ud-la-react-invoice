@@ -86,8 +86,6 @@ class OrderController extends Controller
     {
         $this->authorize('update', $order);
 
-        $products = Product::get(['id', 'name', 'code', 'price', 'tax']);
-
         // 中間テーブルのquantityを含めてリレーションをロード
         $order->load(['customer', 'products']);
 
@@ -120,7 +118,7 @@ class OrderController extends Controller
      */
     public function searchCustomers(Request $request)
     {
-        $query = $request->input('query');
+        $query = $request->input('query')->toString();
         $escaped_query = str_replace(['%', '_'], ['\\%', '\\_'], $query);
         $customers = Customer::where('name', 'like', '%' . $escaped_query . '%')
             ->limit(config('pagination.search_results_limit', 20)) // パフォーマンスのために結果を制限
@@ -137,7 +135,7 @@ class OrderController extends Controller
      */
     public function searchProducts(Request $request)
     {
-        $query = $request->input('query');
+        $query = $request->input('query')->toString();
         $escaped_query = str_replace(['%', '_'], ['\\%', '\\_'], $query);
         $products = Product::where(function ($q) use ($escaped_query) {
             $q->where('name', 'like', '%' . $escaped_query . '%')
