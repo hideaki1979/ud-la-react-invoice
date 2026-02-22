@@ -21,7 +21,7 @@ class OrderPolicy
      */
     public function view(User $user, Order $order): bool
     {
-        return false;
+        return true;    // 認証済ユーザーは閲覧可能
     }
 
     /**

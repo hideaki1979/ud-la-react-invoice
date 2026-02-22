@@ -26,4 +26,8 @@ class Order extends Model
             ->withPivot('quantity')
             ->withTimestamps();
     }
+
+    protected $casts = [
+        'orderday' => 'date:Y-m-d',
+    ];
 }

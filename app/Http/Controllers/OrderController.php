@@ -91,6 +91,8 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
+        $this->authorize('view', $order);
+
         $customers = Customer::get(['id', 'name']);
         $products = Product::get(['id', 'name', 'code', 'price', 'tax']);
 
@@ -118,5 +120,38 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    /**
+     * Search customers for combobox.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchCustomers(Request $request)
+    {
+        $query = $request->input('query');
+        $customers = Customer::where('name', 'like', '%' . $query . '%')
+            ->limit(20) // パフォーマンスのために結果を制限
+            ->get(['id', 'name']);
+
+        return response()->json($customers);
+    }
+
+    /**
+     * Search products for combobox.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchProducts(Request $request)
+    {
+        $query = $request->input('query');
+        $products = Product::where('name', 'like', '%' . $query . '%')
+            ->orWhere('code', 'like', '%' . $query . '%')
+            ->limit(20) // パフォーマンスのために結果を制限
+            ->get(['id', 'name', 'code', 'price', 'tax']);
+
+        return response()->json($products);
     }
 }

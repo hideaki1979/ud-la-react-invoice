@@ -11,9 +11,9 @@ import { computed, ref } from 'vue';
 
 
 const props = defineProps({
-    order: {type: [Object, Array]},
-    products: {type: [Object, Array]},
-    customers: {type: [Object, Array]},
+    order: {type: Object, required: true},
+    customers: {type: Array, required: true},
+    products: {type: Array, required: true},
 });
 
 const form = useForm({
@@ -64,7 +64,7 @@ const totalAmount = computed(() => {
 });
 
 const submit = () => {
-    form.post(route('orders.update', props.order.id));
+    form.put(route('orders.update', props.order.id));
 }
 
 </script>
@@ -144,7 +144,8 @@ const submit = () => {
                                 <div>
                                     <InputLabel :for="'product_id_' + index" value="商品" />
                                     <ComboBoxInput
-                                        :options="products"
+                                        :search-url="route('api.products.search')"
+                                        :initial-display-name="getSelectedProduct(item.id)?.name ?? ''"
                                         :id="'product_id_' + index"
                                         class="mt-2 block w-80"
                                         v-model="item.id"

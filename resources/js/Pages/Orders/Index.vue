@@ -114,6 +114,7 @@ const links = computed(() => {
                                     <td v-if="idx === 0" :rowspan="order.products.length" class="border border-gray-400 px-4 py-2 text-center">
                                         <Link :href="route('orders.edit', order.id)"
                                             :class="'px-4 py-2 bg-yellow-500 text-white border rounded-md text-xs'"
+                                            aria-label="注文を編集"
                                         >
                                             <i class="fa-solid fa-edit"></i>
                                         </Link>

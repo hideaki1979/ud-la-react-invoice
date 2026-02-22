@@ -143,7 +143,7 @@ const submit = () => {
                                 <div>
                                     <InputLabel :for="'product_id_' + index" value="商品" />
                                     <ComboBoxInput
-                                        :options="products"
+                                        :search-url="route('api.products.search')"
                                         :id="'product_id_' + index"
                                         class="mt-2 block w-80"
                                         v-model="item.id"
