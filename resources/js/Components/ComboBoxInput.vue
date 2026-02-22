@@ -13,7 +13,7 @@ const props = defineProps({
     initialDisplayName: {type: String, default: ''},
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'selected']);
 
 const searchText = ref(props.initialDisplayName);
 const isOpen = ref(false);
@@ -49,6 +49,7 @@ const onInput = () => {
 const selectOption = (option) => {
     searchText.value = option.name;
     emit('update:modelValue', option.id);
+    emit('selected', option);
     isOpen.value = false;
 };
 
@@ -101,7 +102,7 @@ watch(() => props.initialDisplayName, (newVal) => {
             v-if="isOpen && searchText && options.length === 0"
             class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg px-3 py-2 text-sm text-gray-500"
         >
-            該当する商品がありません
+            該当する項目がありません
         </p>
     </div>
 </template>

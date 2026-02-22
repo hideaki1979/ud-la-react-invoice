@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
-use App\Http\Resources\OrderResource;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
@@ -47,11 +46,9 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $customers = Customer::get(['id', 'name']);
         $products = Product::get(['id', 'name', 'code', 'price', 'tax']);
 
         return Inertia::render('Orders/Create', [
-            'customers' => $customers,
             'products' => $products,
         ]);
     }
@@ -91,17 +88,15 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        $this->authorize('view', $order);
+        $this->authorize('update', $order);
 
-        $customers = Customer::get(['id', 'name']);
         $products = Product::get(['id', 'name', 'code', 'price', 'tax']);
 
         // 中間テーブルのquantityを含めてリレーションをロード
-        $order->load('products');
+        $order->load(['customer', 'products']);
 
         return Inertia::render('Orders/Edit', [
             'order' => $order,
-            'customers' => $customers,
             'products' => $products,
         ]);
     }
@@ -131,8 +126,9 @@ class OrderController extends Controller
     public function searchCustomers(Request $request)
     {
         $query = $request->input('query');
-        $customers = Customer::where('name', 'like', '%' . $query . '%')
-            ->limit(20) // パフォーマンスのために結果を制限
+        $escaped_query = str_replace(['%', '_'], ['\\%', '\\_'], $query);
+        $customers = Customer::where('name', 'like', '%' . $escaped_query . '%')
+            ->limit(config('pagination.search_results_limit', 20)) // パフォーマンスのために結果を制限
             ->get(['id', 'name']);
 
         return response()->json($customers);
@@ -147,9 +143,10 @@ class OrderController extends Controller
     public function searchProducts(Request $request)
     {
         $query = $request->input('query');
-        $products = Product::where('name', 'like', '%' . $query . '%')
-            ->orWhere('code', 'like', '%' . $query . '%')
-            ->limit(20) // パフォーマンスのために結果を制限
+        $escaped_query = str_replace(['%', '_'], ['\\%', '\\_'], $query);
+        $products = Product::where('name', 'like', '%' . $escaped_query . '%')
+            ->orWhere('code', 'like', '%' . $escaped_query . '%')
+            ->limit(config('pagination.search_results_limit', 20)) // パフォーマンスのために結果を制限
             ->get(['id', 'name', 'code', 'price', 'tax']);
 
         return response()->json($products);

@@ -2,18 +2,15 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SelectInput from '@/Components/SelectInput.vue';
 import ComboBoxInput from '@/Components/ComboBoxInput.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 
 const props = defineProps({
     order: {type: Object, required: true},
-    customers: {type: Array, required: true},
-    products: {type: Array, required: true},
 });
 
 const form = useForm({
@@ -39,16 +36,21 @@ const removeProduct = (index) => {
     form.products.splice(index, 1);
 };
 
-const productMap = computed(() =>
-    props.products.reduce((map, product) => {
+// 注文に紐づく商品で初期化し、選択時に動的追加する
+const productMap = reactive(
+        props.order.products.reduce((map, product) => {
         map[product.id] = product;
         return map;
     }, {})
 );
 
+const onProductSelected = (product) => {
+    productMap[product.id] = product;
+};
+
 // 各行の選択された商品情報を取得
 const getSelectedProduct = (productId) => {
-    return productMap.value[productId];
+    return productMap[productId];
 };
 
 // 合計金額（税込）
@@ -97,14 +99,12 @@ const submit = () => {
                 <form @submit.prevent="submit" class="w-full">
                     <div class="mt-4">
                         <InputLabel for="customer_id" value="客先" />
-                        <SelectInput
-                            :options="customers"
+                        <ComboBoxInput
+                            :search-url="route('api.customers.search')"
+                            :initial-display-name="order.customer.name"
                             id="customer_id"
                             class="mt-2 block w-80"
                             v-model="form.customer_id"
-                            required
-                            autofocus
-                            autocomplete="customer_id"
                         />
                         <InputError class="mt-2" :message="form.errors.customer_id" />
                     </div>
@@ -149,6 +149,7 @@ const submit = () => {
                                         :id="'product_id_' + index"
                                         class="mt-2 block w-80"
                                         v-model="item.id"
+                                        @selected="onProductSelected"
                                     />
                                     <InputError class="mt-2" :message="form.errors['products.' + index + '.id']" />
                                 </div>
