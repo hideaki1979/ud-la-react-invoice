@@ -9,17 +9,21 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed, reactive, ref } from 'vue';
 
 
-const props = defineProps({});
-
-const form = useForm({
-    customer_id: '',
-    orderday: '',
-    products: [
-        {id: '', quantity: '', _uid: 0},
-    ],
+const props = defineProps({
+    order: {type: Object, required: true},
 });
 
-const nextProductId = ref(1);
+const form = useForm({
+    customer_id: props.order.customer_id,
+    orderday: props.order.orderday,
+    products: props.order.products.map((product, index) => ({
+        id: product.id,
+        quantity: product.pivot.quantity,
+        _uid: index,
+    })),
+});
+
+const nextProductId = ref(props.order.products.length);
 
 // 商品行の追加
 const addProduct = () => {
@@ -32,8 +36,13 @@ const removeProduct = (index) => {
     form.products.splice(index, 1);
 };
 
-// 選択時に動的追加する
-const productMap = reactive({});
+// 注文に紐づく商品で初期化し、選択時に動的追加する
+const productMap = reactive(
+        props.order.products.reduce((map, product) => {
+        map[product.id] = product;
+        return map;
+    }, {})
+);
 
 const onProductSelected = (product) => {
     productMap[product.id] = product;
@@ -57,27 +66,25 @@ const totalAmount = computed(() => {
 });
 
 const submit = () => {
-    form.post(route('orders.store'), {
-        onSuccess: () => form.reset(),
-    });
+    form.put(route('orders.update', props.order.id));
 }
 
 </script>
 
 <template>
-    <Head title="オーダー登録" />
+    <Head title="オーダー編集" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-normal">
-                オーダー登録
+                オーダー編集
             </h2>
         </template>
 
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">オーダー登録</div>
+                    <div class="p-6 text-gray-900">オーダー編集</div>
                 </div>
 
                 <div class="mt-4 mb-4 ml-4 flex">
@@ -94,6 +101,7 @@ const submit = () => {
                         <InputLabel for="customer_id" value="客先" />
                         <ComboBoxInput
                             :search-url="route('api.customers.search')"
+                            :initial-display-name="order.customer.name"
                             id="customer_id"
                             class="mt-2 block w-80"
                             v-model="form.customer_id"
@@ -137,6 +145,7 @@ const submit = () => {
                                     <InputLabel :for="'product_id_' + index" value="商品" />
                                     <ComboBoxInput
                                         :search-url="route('api.products.search')"
+                                        :initial-display-name="getSelectedProduct(item.id)?.name ?? ''"
                                         :id="'product_id_' + index"
                                         class="mt-2 block w-80"
                                         v-model="item.id"
@@ -205,7 +214,7 @@ const submit = () => {
                             :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing"
                         >
-                            登録
+                            更新
                         </PrimaryButton>
                     </div>
                 </form>
