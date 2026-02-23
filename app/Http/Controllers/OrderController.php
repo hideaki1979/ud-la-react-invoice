@@ -76,7 +76,13 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        $this->authorize('view', $order);
+
+        $order->load(['customer', 'products']);
+
+        return Inertia::render('Orders/Show', [
+            'order' => $order,
+        ]);
     }
 
     /**
@@ -99,7 +105,23 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        $this->authorize('update', $order);
+
+        DB::transaction(function () use ($request, $order) {
+            $order->update([
+                'customer_id' => $request->customer_id,
+                'orderday' => $request->orderday,
+            ]);
+
+            $products = collect($request->products)->mapWithKeys(function ($product) {
+                return [$product['id'] => ['quantity' => $product['quantity']]];
+            });
+
+            $order->products()->sync($products);
+        });
+
+        return to_route('orders.index')
+            ->with('success', '注文を更新しました。');
     }
 
     /**
@@ -107,7 +129,15 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $this->authorize('delete', $order);
+
+        DB::transaction(function () use ($order) {
+            $order->products()->detach();
+            $order->delete();
+        });
+
+        return to_route('orders.index')
+            ->with('success', '注文を削除しました。');
     }
 
     /**
@@ -118,7 +148,7 @@ class OrderController extends Controller
      */
     public function searchCustomers(Request $request)
     {
-        $query = $request->input('query')->toString();
+        $query = $request->string('query')->toString();
         $escaped_query = str_replace(['%', '_'], ['\\%', '\\_'], $query);
         $customers = Customer::where('name', 'like', '%' . $escaped_query . '%')
             ->limit(config('pagination.search_results_limit', 20)) // パフォーマンスのために結果を制限
@@ -135,7 +165,7 @@ class OrderController extends Controller
      */
     public function searchProducts(Request $request)
     {
-        $query = $request->input('query')->toString();
+        $query = $request->string('query')->toString();
         $escaped_query = str_replace(['%', '_'], ['\\%', '\\_'], $query);
         $products = Product::where(function ($q) use ($escaped_query) {
             $q->where('name', 'like', '%' . $escaped_query . '%')
