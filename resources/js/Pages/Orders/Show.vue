@@ -1,4 +1,6 @@
 <script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
     const props = defineProps({
@@ -42,6 +44,12 @@ import { computed } from 'vue';
                     >
                         <i class="fa-solid fa-edit"></i> 編集
                     </Link>
+                    <a
+                        :href="route('orders.pdf', order.id)"
+                        class="px-4 py-2 bg-red-500 text-white border rounded-md text-sm"
+                    >
+                        <i class="fa-solid fa-file-pdf"></i> PDF出力
+                    </a>
                 </div>
 
                 <div class="mt-4 bg-white shadow-sm sm:rounded-lg p-6">

@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('products', ProductController::class);
+    Route::get('/orders/{order}/pdf', [OrderController::class, 'pdf'])->name('orders.pdf');
     Route::resource('orders', OrderController::class);
     Route::get('/api/customers/search', [OrderController::class, 'searchCustomers'])->name('api.customers.search');
     Route::get('/api/products/search', [OrderController::class, 'searchProducts'])->name('api.products.search');

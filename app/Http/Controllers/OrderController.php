@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -175,5 +176,27 @@ class OrderController extends Controller
             ->get(['id', 'name', 'code', 'price', 'tax']);
 
         return response()->json($products);
+    }
+
+    /**
+     * Generate PDF for the specified order.
+     */
+    public function pdf(Order $order)
+    {
+        $this->authorize('view', $order);
+
+        $order->load(['customer', 'products']);
+
+        $totalAmount = $order->products->reduce(function ($sum, $product) {
+            $taxRate = 1 + $product->tax / 100;
+            return $sum + floor($product->price * $product->pivot->quantity * $taxRate);
+        }, 0);
+
+        $pdf = Pdf::loadView('orders.pdf', [
+            'order' => $order,
+            'totalAmount' => $totalAmount,
+        ]);
+
+        return $pdf->download("order-{$order->id}.pdf");
     }
 }
