@@ -86,7 +86,7 @@ import { computed } from 'vue';
                                 <tr v-for="product in order.products" :key="product.id">
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.name }}</td>
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.price.toLocaleString() }}円</td>
-                                    <td class="border border-gray-400 px-4 py-2 text-center">{{ product.tax }}</td>
+                                    <td class="border border-gray-400 px-4 py-2 text-center">{{ product.tax }}％</td>
                                     <td class="border border-gray-400 px-4 py-2 text-center">{{ product.pivot.quantity }}</td>
                                     <td class="border border-gray-400 px-4 py-2 text-center">
                                         {{ Math.floor(product.price * product.pivot.quantity * (1 + product.tax / 100)).toLocaleString() }}円
