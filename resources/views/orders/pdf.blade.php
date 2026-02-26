@@ -104,7 +104,7 @@
     </table>
 
     <div class="total-box">
-        合計金額（税込）： {{ number_format($totalAmount) }}円
+        合計金額（税込）： {{ number_format($order->totalAmount) }}円
     </div>
 </body>
 

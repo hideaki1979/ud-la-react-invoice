@@ -187,10 +187,7 @@ class OrderController extends Controller
 
         $order->load(['customer', 'products']);
 
-        $totalAmount = $order->products->reduce(function ($sum, $product) {
-            $taxRate = 1 + $product->tax / 100;
-            return $sum + floor($product->price * $product->pivot->quantity * $taxRate);
-        }, 0);
+        $totalAmount = $order->total_amount;
 
         $pdf = Pdf::loadView('orders.pdf', [
             'order' => $order,

@@ -1,19 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
 
     const props = defineProps({
         order: {type: Object, required: true},
     });
 
-    const totalAmount = computed(() => {
-        return props.order.products.reduce((sum, product) => {
-            const taxRate = 1 + product.tax / 100;
-            return sum + Math.floor(product.price * product.pivot.quantity * taxRate);
-        }, 0);
-    });
-</script>
+    </script>
 
 <template>
     <Head title="オーダー詳細" />
@@ -99,7 +92,7 @@ import { computed } from 'vue';
                     <!-- 合計金額 -->
                     <div class="mt-6 p-4 bg-blue-50 rounded-md border border-blue-200">
                         <div class="text-lg">
-                            合計金額（税込）： {{ totalAmount.toLocaleString() }}円
+                            合計金額（税込）： {{ props.order.total_amount }}円
                         </div>
                     </div>
                 </div>
